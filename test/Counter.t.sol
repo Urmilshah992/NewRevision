@@ -21,4 +21,10 @@ contract CounterTest is Test {
         counter.setNumber(x);
         assertEq(counter.number(), x);
     }
+
+    function testShouldAlwaysZero(uint256 y) public {
+    counter.shouldAlwaysZero(y);
+    assert(counter.data() == 0);
+    }
 }
+
