@@ -5,13 +5,13 @@ import {Test, console} from "forge-std/Test.sol";
 import {Counter} from "../src/Counter.sol";
 import {StdInvariant} from "forge-std/StdInvariant.sol";
 
-contract CounterTest is StdInvariant, Test { 
+contract CounterTest is StdInvariant, Test {
     Counter public counter;
 
     function setUp() public {
         counter = new Counter();
         targetContract(address(counter));
-        counter.setNumber(0);      
+        counter.setNumber(0);
     }
 
     function test_Increment() public {
@@ -25,14 +25,11 @@ contract CounterTest is StdInvariant, Test {
     }
 
     function testShouldAlwaysZeroFuzz(uint256 y) public {
-    counter.shouldAlwaysZero(y);
-    assert(counter.data() == 0);
+        counter.shouldAlwaysZero(y);
+        assert(counter.data() == 0);
     }
-
 
     function invariant_testXy() public view {
         assert(counter.data() == 0);
-
     }
 }
-

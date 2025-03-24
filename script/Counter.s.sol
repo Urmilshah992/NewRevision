@@ -14,6 +14,8 @@ contract CounterScript is Script {
 
         counter = new Counter();
 
+        console.log(counter.data());
+        counter.convertabicode();
         vm.stopBroadcast();
     }
 }
