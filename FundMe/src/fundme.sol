@@ -2,18 +2,18 @@
 pragma solidity ^0.8.29;
 import {PriceConvertor} from "./PriceConvertor.sol";
 contract FundMe{
-    using Priceconvertor for uint256;
-    uint256 public minimumUSD = 5e18;
+    using PriceConvertor for uint256;
+    uint256 public constant MINIMUMUSD = 5e18;
     address[] public funders;
     mapping(address funder => uint256 amountFunded) public fundersAmount;
-    address public owner;
+    address public immutable  i_owner;
     constructor(){
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
     function fund() public payable{
         //1e18 = 1ETH = 1000000000000000000 wei
         //1e18 = 10000000000 Gwei (Gas Cost Count)
-        require(msg.value.getConversionRate() >   1e18, "You need to spend more ETH!");
+        require(msg.value.getConversionRate() > MINIMUMUSD, "You need to spend more ETH!");
         funders.push(msg.sender);
         fundersAmount[msg.sender] += msg.value;
     }
@@ -33,7 +33,7 @@ contract FundMe{
     }   
 
     modifier onlyOwner(){
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == i_owner, "Only owner can call this function");
         _;
     }
 
