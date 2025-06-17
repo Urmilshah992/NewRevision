@@ -5,10 +5,14 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 
 contract FundMe{
     uint256 public minimumUSD = 5e18;
+    address[] public funders;
+    mapping(address funder => uint256 amountFunded) public fundersAmount;
     function fund() public payable{
         //1e18 = 1ETH = 1000000000000000000 wei
         //1e18 = 10000000000 Gwei (Gas Cost Count)
         require(msg.value >   1e18, "You need to spend more ETH!");
+        funders.push(msg.sender);
+        fundersAmount[msg.sender] += msg.value;
     }
 
     function withdraw() public {
