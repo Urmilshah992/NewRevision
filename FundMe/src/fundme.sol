@@ -1,31 +1,30 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
-
-
+import {PriceConvertor} from "./PriceConvertor.sol";
 contract FundMe{
+    using Priceconvertor for uint256;
     uint256 public minimumUSD = 5e18;
     address[] public funders;
     mapping(address funder => uint256 amountFunded) public fundersAmount;
     function fund() public payable{
         //1e18 = 1ETH = 1000000000000000000 wei
         //1e18 = 10000000000 Gwei (Gas Cost Count)
-        require(msg.value >   1e18, "You need to spend more ETH!");
+        require(msg.value.getConversionRate() >   1e18, "You need to spend more ETH!");
         funders.push(msg.sender);
         fundersAmount[msg.sender] += msg.value;
     }
 
     function withdraw() public {
+        for (uint256 funderIndex = 0; funderIndex< funders.length; funderIndex++){
+            address funder = funders[funderIndex];
+            fundersAmount[funder] = 0; // Reset the amount funded for each funder
+            
+        }
+        // Reset the funders array
+        funders = new address[] (0);
+        //Transfer the balance to the contract owner
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
+        require(callSuccess, "Call failed");
     }   
-     function getPrice()public view return{
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
-        (,int256 price,,,) = priceFeed.latestRoundData();
-        return uint256(price * 1e10);
 
-     }  
-     function getConversionRate(uint256 ethUSD) public view returns(uint256) {
-        uint256 ethPrice =getPrice();
-        uint256 ethAmountInUSD = (ethPrice * ethUSD) / 1e18;
-        return ethAmountInUSD;
-     }
 }
