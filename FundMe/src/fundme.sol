@@ -4,7 +4,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 
 
 contract FundMe{
-    uint256 public minimumUSD = 5;
+    uint256 public minimumUSD = 5e18;
     function fund() public payable{
         //1e18 = 1ETH = 1000000000000000000 wei
         //1e18 = 10000000000 Gwei (Gas Cost Count)
@@ -19,7 +19,9 @@ contract FundMe{
         return uint256(price * 1e10);
 
      }  
-     function getConversionRate() public {
-
+     function getConversionRate(uint256 ethUSD) public view returns(uint256) {
+        uint256 ethPrice =getPrice();
+        uint256 ethAmountInUSD = (ethPrice * ethUSD) / 1e18;
+        return ethAmountInUSD;
      }
 }
