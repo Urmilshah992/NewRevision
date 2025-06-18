@@ -14,5 +14,14 @@ Library PriceConvertor{
         uint256 ethAmountInUSD = (ethPrice * ethAmount) / 1e18;
         return ethAmountInUSD;
     }
+
+    //What happens if by mistake the user sends money to the contract?
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
+    }
     
 }
