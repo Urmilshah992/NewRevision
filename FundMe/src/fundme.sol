@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 import {PriceConvertor} from "./PriceConvertor.sol";
-error NotOwner();
+error FundMe_NotOwner();
 contract FundMe{
     using PriceConvertor for uint256;
     uint256 public constant MINIMUMUSD = 5e18;
@@ -36,7 +36,7 @@ contract FundMe{
     modifier onlyOwner(){
         // require(msg.sender == i_owner, "Only owner can call this function");
         if(msg.sender != i_owner) {
-            revert NotOwner();
+            revert FundMe_NotOwner();
         }
         _;
     }
