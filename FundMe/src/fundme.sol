@@ -1,13 +1,17 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
+
 import {PriceConvertor} from "./PriceConvertor.sol";
 error FundMe_NotOwner();
+
 contract FundMe{
+
     using PriceConvertor for uint256;
     uint256 public constant MINIMUMUSD = 5e18;
     address[] public funders;
     mapping(address funder => uint256 amountFunded) public fundersAmount;
     address public immutable  i_owner;
+    
     constructor(){
         i_owner = msg.sender;
     }
