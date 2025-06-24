@@ -10,3 +10,9 @@
 [submodule "simplestorage/lib/forge-std"]
 	path = simplestorage/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "lib/chainlink-brownie-contracts"]
+	path = lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
+[submodule "FundMe/lib/chainlink-brownie-contracts"]
+	path = FundMe/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts

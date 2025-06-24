@@ -40,5 +40,13 @@ contract FundMe{
         }
         _;
     }
+     //What happens if by mistake the user sends money to the contract?
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
+    }
 
 }
