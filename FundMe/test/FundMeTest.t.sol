@@ -4,12 +4,14 @@ pragma solidity ^0.8.29;
 import {FundMe} from "../src/fundme.sol";
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
+import {DeployFundMe} from "../script/DeployFundme.s.sol";
 
 contract FundMeTest is Test(){
     FundMe fundme;
 
     function setUp() external{
-        fundme = new FundMe();
+        DeployFundMe deployFundMe = new DeployFundMe();
+        fundme = deployFundMe.run();
     }
 
     function testMinimumUSDcheckDoller() public view{
