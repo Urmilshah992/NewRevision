@@ -4,12 +4,12 @@ import {Script} from "forge-std/Script.sol";
 
 contract HelperConfig is Script {
     
+    NetworkConfig public activeNetworkConfig;
     struct NetworkConfig{
         address priceFeedAddress; //Eth/USD
 
     } 
 
-    NetworkConfig public activeNetworkConfig;
 
     constructor() {
         if(block.chainid == 11155111) {
