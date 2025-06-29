@@ -19,7 +19,7 @@ contract FundMeTest is Test(){
     }
 
     function testOwner() public view{
-        assertEq(fundme.i_owner(), address(this));
+        assertEq(fundme.i_owner(), msg.sender); // Check if the owner is the deployer
     }
 
     // function testwidraw() public{
