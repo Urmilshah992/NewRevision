@@ -11,8 +11,8 @@ contract FundMe {
 
     using PriceConvertor for uint256;
     uint256 public constant MINIMUMUSD = 5e18;
-    address[] public s_funders;
-    mapping(address funder => uint256 amountFunded) public s_fundersAmount;
+    address[] private s_funders;
+    mapping(address funder => uint256 amountFunded) private s_fundersAmount;
     address public immutable  i_owner;
     AggregatorV3Interface public s_priceFeed;
     
@@ -62,5 +62,14 @@ contract FundMe {
     fallback() external payable {
         fund();
     }
+    
 
+    //View/Pure(getters/Setters) functions
+    function getAddressToAmountFunded(address fundingAddress) external view returns(uint256){
+        return s_fundersAmount[fundingAddress];
+    }
+
+    function getFunder(uint256 _index) external view returns(address){
+        return s_funders[_index];
+    }
 }
