@@ -35,4 +35,12 @@ contract FundMeTest is Test(){
 
     }
 
+    function testTimestamp() public {
+        uint256 currentTime = block.timestamp;
+        console.log("Current TimeStamp:%s", currentTime);
+        vm.warp(1); // Warp the blockchain to a specific timestamp
+        assertEq(block.timestamp, currentTime, "Timestamp should match the current time");
+
+
+    }
 }
