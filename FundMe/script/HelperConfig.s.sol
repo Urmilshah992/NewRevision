@@ -43,6 +43,9 @@ contract HelperConfig is Script {
 
     function getAnvilEthConfig() public  returns (NetworkConfig memory){
         //priceFeedAddress of the Anvil ETH/USD Price Feed
+        if(activeNetworkConfig.priceFeedAddress != address(0)){
+            return activeNetworkConfig; // If already set, return the existing config
+        }
 
             vm.startBroadcast();
             MockV3Aggregator mockv3aggregator = new MockV3Aggregator(DECIMALS, INITIAL_PRICE); // 2000 USD
