@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 import {Script} from "forge-std/Script.sol";
+import {MockV3Aggregator} from "@chainlink/contracts/src/v0.8/tests/MockV3Aggregator.sol";
 
 contract HelperConfig is Script {
     
@@ -37,8 +38,14 @@ contract HelperConfig is Script {
         return ethConfig;
     }
 
-    function getAnvilEthConfig() public pure returns (NetworkConfig memory){
+    function getAnvilEthConfig() public  returns (NetworkConfig memory){
         //priceFeedAddress of the Anvil ETH/USD Price Feed
+
+            vm.startBroadcast();
+            MockV3Aggregator mockv3aggregator = new MockV3Aggregator(8, 2000e8); // 2000 USD
+            vm.stopBroadcast();
+            NetworkConfig memory anvilConfig = NetworkConfig({priceFeedAddress: address(mockv3aggregator)});
+            return anvilConfig;
 
     }
 }
