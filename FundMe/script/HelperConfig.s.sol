@@ -16,6 +16,10 @@ contract HelperConfig is Script {
             //Sepolia
             activeNetworkConfig = getSepoliaEthConfig();
         }
+        else if(block.chainid == 1) {
+            //Mainnet
+            activeNetworkConfig = getEthConfig();
+        }
         else {
             activeNetworkConfig = getAnvilEthConfig();
         }
@@ -25,6 +29,12 @@ contract HelperConfig is Script {
         //priceFeedAddress of the Sepolia ETH/USd Price Feed
         NetworkConfig memory seploiaConfig = NetworkConfig({priceFeedAddress: 0x694AA1769357215DE4FAC081bf1f309aDC325306});
         return seploiaConfig;
+    }
+
+      function getEthConfig() public pure returns (NetworkConfig memory){
+        //priceFeedAddress of the Sepolia ETH/USd Price Feed
+        NetworkConfig memory ethConfig = NetworkConfig({priceFeedAddress: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419});
+        return ethConfig;
     }
 
     function getAnvilEthConfig() public pure returns (NetworkConfig memory){
