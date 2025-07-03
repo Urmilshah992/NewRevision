@@ -23,7 +23,7 @@ contract FundMeTest is Test(){
     }
 
     function testOwner() public view{
-        assertEq(fundme.i_owner(), msg.sender); // Check if the owner is the deployer
+        assertEq(fundme.getOwner(), msg.sender); // Check if the owner is the deployer
     }
 
 
@@ -56,12 +56,30 @@ contract FundMeTest is Test(){
         assertEq(fundingaddress,USER);
     }
 
-    function testOwnerWithdraw() public{
+    modifier funded(){
         vm.prank(USER);
         fundme.fund{value:giveMoney}();
+        _;
+    }
 
+    function testOwnerWithdraw() public funded{
         vm.expectRevert();
         vm.prank(USER);
         fundme.withdraw();
+    }
+
+    function testWithdrawOwner() public funded{
+        //arrange
+        uint256 startingOwnerBalance = fundme.getOwner().balance;
+        uint256 startingFundMeBalance = address(fundme).balance;
+        //act
+        vm.prank(fundme.getOwner());
+        fundme.withdraw();
+        //assert
+        uint256 endingOwnerBalance = fundme.getOwner().balance;
+        uint256 endingFundmeBalance = address(fundme).balance;
+        assertEq(endingFundmeBalance, 0); // Check if the FundMe contract
+        assertEq(endingOwnerBalance, startingOwnerBalance + startingFundMeBalance);
+
     }
 }
