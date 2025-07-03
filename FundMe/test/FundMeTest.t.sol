@@ -82,4 +82,28 @@ contract FundMeTest is Test(){
         assertEq(endingOwnerBalance, startingOwnerBalance + startingFundMeBalance);
 
     }
+    function testWithDrawWithMultipleFunders() public funded{
+        //arrange
+        uint160 numberOfFunders = 10;
+        uint160 staringIndex = 1;
+        for(uint160 i = staringIndex; i< numberOfFunders; i++){
+            hoax(address(i),giveMoney);
+            fundme.fund{value:giveMoney}();
+        }
+
+        uint256 startingOwnerBalance = fundme.getOwner().balance;
+        console.log(startingOwnerBalance);
+        uint256 startingFundMeBalance = address(fundme).balance;
+        console.log(startingFundMeBalance);
+
+        //act
+        vm.startPrank(fundme.getOwner());
+        fundme.withdraw();
+        vm.stopPrank();
+
+        //assert
+        assert(address(fundme).balance == 0);
+        assert(fundme.getOwner().balance == startingOwnerBalance + startingFundMeBalance);
+    }
+
 }
