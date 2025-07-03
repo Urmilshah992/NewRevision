@@ -9,9 +9,13 @@ import {DeployFundMe} from "../script/DeployFundme.s.sol";
 contract FundMeTest is Test(){
     FundMe fundme;
 
+    address USER  = makeAddr("user");
+    uint256 constant giveMoney = 0.1 ether;
+
     function setUp() external{
         DeployFundMe deployFundMe = new DeployFundMe();
         fundme = deployFundMe.run();
+        vm.deal(USER,15e18); //Give some ETH to USER
     }
 
     function testMinimumUSDcheckDoller() public view{
@@ -31,16 +35,33 @@ contract FundMeTest is Test(){
 
     function testFundFailWitoutEnoughFunds() public{
         vm.expectRevert("You need to spend more ETH!");
-        fundme.fund{value:1e17}();
-
+        fundme.fund();
     }
 
-    function testTimestamp() public {
-        uint256 currentTime = block.timestamp;
-        console.log("Current TimeStamp:%s", currentTime);
-        vm.warp(1); // Warp the blockchain to a specific timestamp
-        assertEq(block.timestamp, currentTime, "Timestamp should match the current time");
+    function testFundUpdateFundedAmount() public{
+        vm.prank(USER); //Next TX will be sent  by USER
+        fundme.fund{value:giveMoney}();
+        uint256 fundedAmount = fundme.getAddressToAmountFunded(USER);
+        console.log(fundedAmount);
+        console.log(USER);
+        assertEq(fundedAmount, giveMoney);
+   //     assertEq(msg.sender,USER); // Check if the funded amount is 10e18
+    }
 
 
+    function testFunderArrayCheck() public {
+        vm.prank(USER);
+        fundme.fund{value:giveMoney}();
+        address fundingaddress = fundme.getFunder(0);
+        assertEq(fundingaddress,USER);
+    }
+
+    function testOwnerWithdraw() public{
+        vm.prank(USER);
+        fundme.fund{value:giveMoney}();
+
+        vm.expectRevert();
+        vm.prank(USER);
+        fundme.withdraw();
     }
 }
