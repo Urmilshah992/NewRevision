@@ -33,9 +33,10 @@ contract FundMe {
         return s_priceFeed.version();
         
     }
+    
     function withdraw() public onlyOwner {
-        
-        for (uint256 funderIndex = 0; funderIndex< s_funders.length; funderIndex++){
+        uint256 fundersCount = s_funders.length;
+        for (uint256 funderIndex = 0; funderIndex< fundersCount; funderIndex++){
             address funder = s_funders[funderIndex];
             s_fundersAmount[funder] = 0; // Reset the amount funded for each funder
             
