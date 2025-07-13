@@ -18,4 +18,10 @@ contract Raffel{
 
     function pickWiner() public {}
 
+    /**Geter Function */
+
+    function getEntrancefee() external view returns(uint256){
+        return i_entranceFee;
+    }
+
 }
