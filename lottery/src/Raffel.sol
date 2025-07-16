@@ -14,6 +14,8 @@ contract Raffel{
     uint256 private immutable i_entranceFee;
     address payable[] private s_players; 
 
+    /* Events  */
+    event RaffelEntered(address indexed player);
 
     constructor(uint256 entranceFee){
         i_entranceFee = entranceFee;
@@ -25,7 +27,10 @@ contract Raffel{
             revert Raffel__NotEnoughEth();
             }
         //Add the player to the players array
-        s_players.push(payable(msg.sender));    
+        s_players.push(payable(msg.sender));   
+        //Emit an event
+        emit RaffelEntered(msg.sender);
+
     }
    
 
