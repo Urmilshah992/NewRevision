@@ -13,12 +13,18 @@ contract Raffel{
     /* State Variables */
     uint256 private immutable i_entranceFee;
     address payable[] private s_players; 
+    uint256 private immutable i_interval;
+    uint256 private s_lastTimestamp;
+
 
     /* Events  */
     event RaffelEntered(address indexed player);
 
-    constructor(uint256 entranceFee){
+    constructor(uint256 entranceFee, uint256 interval){
         i_entranceFee = entranceFee;
+        i_interval = interval;
+        s_lastTimestamp = block.timestamp;
+
     }
 
     function enterRaffel() public payable{
@@ -34,7 +40,11 @@ contract Raffel{
     }
    
 
-    function pickWiner() public {}
+    function pickWiner() public {
+        if(block.timestamp-s_lastTimestamp <i_interval){
+
+        }
+    }
 
     /**Geter Function */
 
