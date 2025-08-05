@@ -8,7 +8,7 @@ import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFCo
  * @author Urmil Shah
  * @notice This contract is Sample Raffel Contract
  */
-contract Raffel {
+contract Raffel is VRFConsumerBaseV2Plus {
     /* Custom Error    */
     error Raffel__NotEnoughEth();
 
