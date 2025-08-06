@@ -2,7 +2,7 @@
 pragma solidity >0.8.29;
 
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
-
+import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 /**
  * @title Raffel
  * @author Urmil Shah
@@ -14,14 +14,15 @@ contract Raffel is VRFConsumerBaseV2Plus {
 
     /* State Variables */
     uint256 private immutable i_entranceFee;
-    address payable[] private s_players;
     uint256 private immutable i_interval;
+    bytes32 private immutable i_keyHash;
+    address payable[] private s_players;
     uint256 private s_lastTimestamp;
 
     /* Events  */
     event RaffelEntered(address indexed player);
 
-    constructor(uint256 entranceFee, uint256 interval) {
+    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator) VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_interval = interval;
         s_lastTimestamp = block.timestamp;
@@ -41,8 +42,8 @@ contract Raffel is VRFConsumerBaseV2Plus {
     function pickWiner() public {
         if (block.timestamp - s_lastTimestamp < i_interval) {}
         revert();
-         requestId = s_vrfCoordinator.requestRandomWords(
-            VRFV2PlusClient.RandomWordsRequest({
+        
+           VRFV2PlusClient.RandomWordsRequest request =  VRFV2PlusClient.RandomWordsRequest({
                 keyHash: keyHash,
                 subId: s_subscriptionId,
                 requestConfirmations: requestConfirmations,
@@ -53,7 +54,9 @@ contract Raffel is VRFConsumerBaseV2Plus {
                         nativePayment: enableNativePayment
                     })
                 )
-            })
+            });
+             uint256 requestId = s_vrfCoordinator.requestRandomWords(
+                request
         );
     }
 
