@@ -22,9 +22,11 @@ contract Raffel is VRFConsumerBaseV2Plus {
     /* Events  */
     event RaffelEntered(address indexed player);
 
-    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator) VRFConsumerBaseV2Plus(vrfCoordinator) {
+    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator, bytes32 gasLine) 
+         VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_interval = interval;
+        i_keyHash = gasLine;
         s_lastTimestamp = block.timestamp;
     }
 
@@ -44,7 +46,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
         revert();
         
            VRFV2PlusClient.RandomWordsRequest request =  VRFV2PlusClient.RandomWordsRequest({
-                keyHash: keyHash,
+                keyHash: i_keyHash,
                 subId: s_subscriptionId,
                 requestConfirmations: requestConfirmations,
                 callbackGasLimit: callbackGasLimit,
