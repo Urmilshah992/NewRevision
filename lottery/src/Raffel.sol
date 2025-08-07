@@ -8,6 +8,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
  * @author Urmil Shah
  * @notice This contract is Sample Raffel Contract
  */
+
 contract Raffel is VRFConsumerBaseV2Plus {
     /* Custom Error    */
     error Raffel__NotEnoughEth();
@@ -25,15 +26,20 @@ contract Raffel is VRFConsumerBaseV2Plus {
     /* Events  */
     event RaffelEntered(address indexed player);
 
-    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator, bytes32 gasLine, uint256 subscriptionId, uint32 callbackGasLimit) 
-         VRFConsumerBaseV2Plus(vrfCoordinator) {
+    constructor(
+        uint256 entranceFee,
+        uint256 interval,
+        address vrfCoordinator,
+        bytes32 gasLine,
+        uint256 subscriptionId,
+        uint32 callbackGasLimit
+    ) VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_interval = interval;
         i_keyHash = gasLine;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
         s_lastTimestamp = block.timestamp;
-
     }
 
     function enterRaffel() public payable {
@@ -50,22 +56,16 @@ contract Raffel is VRFConsumerBaseV2Plus {
     function pickWiner() public {
         if (block.timestamp - s_lastTimestamp < i_interval) {}
         revert();
-        
-           VRFV2PlusClient.RandomWordsRequest request =  VRFV2PlusClient.RandomWordsRequest({
-                keyHash: i_keyHash,
-                subId: i_subscriptionId,
-                requestConfirmations: REQUEST_CONFIRMATIONS,
-                callbackGasLimit: i_callbackGasLimit,
-                numWords: numWords,
-                extraArgs: VRFV2PlusClient._argsToBytes(
-                    VRFV2PlusClient.ExtraArgsV1({
-                        nativePayment: enableNativePayment
-                    })
-                )
-            });
-             uint256 requestId = s_vrfCoordinator.requestRandomWords(
-                request
-        );
+
+        VRFV2PlusClient.RandomWordsRequest request = VRFV2PlusClient.RandomWordsRequest({
+            keyHash: i_keyHash,
+            subId: i_subscriptionId,
+            requestConfirmations: REQUEST_CONFIRMATIONS,
+            callbackGasLimit: i_callbackGasLimit,
+            numWords: numWords,
+            extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: enableNativePayment}))
+        });
+        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
     }
 
     /**
