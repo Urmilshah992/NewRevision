@@ -12,6 +12,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
 contract Raffel is VRFConsumerBaseV2Plus {
     /* Custom Error    */
     error Raffel__NotEnoughEth();
+    error Reffel__FieldTransfer();
 
     /* State Variables */
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
@@ -23,6 +24,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
     uint32 private immutable i_callbackGasLimit;
     address payable[] private s_players;
     uint256 private s_lastTimestamp;
+    address private s_recentWinner;
 
     /* Events  */
     event RaffelEntered(address indexed player);
@@ -73,6 +75,13 @@ contract Raffel is VRFConsumerBaseV2Plus {
 
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
     
+            uint256 indexOfWinner = randomWords[0] % s_players.length;
+            address payable winner = s_players[indexOfWinner];
+            s_recentWinner = winner;
+            (bool success,) = winner.call{value:address(this).balance}("");
+            if(!success){
+                revert Reffel__FieldTransfer();
+            }
     }
 
 
