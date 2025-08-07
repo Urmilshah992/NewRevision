@@ -13,21 +13,27 @@ contract Raffel is VRFConsumerBaseV2Plus {
     error Raffel__NotEnoughEth();
 
     /* State Variables */
+    uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint256 private immutable i_entranceFee;
     uint256 private immutable i_interval;
     bytes32 private immutable i_keyHash;
+    uint256 private immutable i_subscriptionId;
+    uint32 private immutable i_callbackGasLimit;
     address payable[] private s_players;
     uint256 private s_lastTimestamp;
 
     /* Events  */
     event RaffelEntered(address indexed player);
 
-    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator, bytes32 gasLine) 
+    constructor(uint256 entranceFee, uint256 interval, address vrfCoordinator, bytes32 gasLine, uint256 subscriptionId, uint32 callbackGasLimit) 
          VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
         i_interval = interval;
         i_keyHash = gasLine;
+        i_subscriptionId = subscriptionId;
+        i_callbackGasLimit = callbackGasLimit;
         s_lastTimestamp = block.timestamp;
+
     }
 
     function enterRaffel() public payable {
@@ -47,9 +53,9 @@ contract Raffel is VRFConsumerBaseV2Plus {
         
            VRFV2PlusClient.RandomWordsRequest request =  VRFV2PlusClient.RandomWordsRequest({
                 keyHash: i_keyHash,
-                subId: s_subscriptionId,
-                requestConfirmations: requestConfirmations,
-                callbackGasLimit: callbackGasLimit,
+                subId: i_subscriptionId,
+                requestConfirmations: REQUEST_CONFIRMATIONS,
+                callbackGasLimit: i_callbackGasLimit,
                 numWords: numWords,
                 extraArgs: VRFV2PlusClient._argsToBytes(
                     VRFV2PlusClient.ExtraArgsV1({
