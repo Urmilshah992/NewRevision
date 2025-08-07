@@ -15,6 +15,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
 
     /* State Variables */
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
+    uint32 private constant NUM_WORDS = 1;
     uint256 private immutable i_entranceFee;
     uint256 private immutable i_interval;
     bytes32 private immutable i_keyHash;
@@ -54,19 +55,26 @@ contract Raffel is VRFConsumerBaseV2Plus {
     }
 
     function pickWiner() public {
-        if (block.timestamp - s_lastTimestamp < i_interval) {}
-        revert();
+        if (block.timestamp - s_lastTimestamp < i_interval) {
+            revert();
+        }
+        
 
-        VRFV2PlusClient.RandomWordsRequest request = VRFV2PlusClient.RandomWordsRequest({
+        VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient.RandomWordsRequest({
             keyHash: i_keyHash,
             subId: i_subscriptionId,
             requestConfirmations: REQUEST_CONFIRMATIONS,
             callbackGasLimit: i_callbackGasLimit,
-            numWords: numWords,
-            extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: enableNativePayment}))
+            numWords: NUM_WORDS,
+            extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: false}))
         });
         uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
     }
+
+    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
+    
+    }
+
 
     /**
      * Geter Function
