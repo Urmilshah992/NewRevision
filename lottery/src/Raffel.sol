@@ -16,7 +16,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
     error Raffel__NotOpen();
 
     /* Type Declaration*/
-    enum RaffelState{
+    enum RaffelState {
         OPEN,
         CALCULATING
     }
@@ -36,6 +36,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
 
     /* Events  */
     event RaffelEntered(address indexed player);
+    event WinnerPicked(address indexed winner);
 
     constructor(
         uint256 entranceFee,
@@ -60,7 +61,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
             revert Raffel__NotEnoughEth();
         }
 
-        if(s_raffelState != RaffelState.OPEN){
+        if (s_raffelState != RaffelState.OPEN) {
             revert Raffel__NotOpen();
         }
         //Add the player to the players array
@@ -73,7 +74,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
         if (block.timestamp - s_lastTimestamp < i_interval) {
             revert();
         }
-        
+
         s_raffelState = RaffelState.CALCULATING;
         VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient.RandomWordsRequest({
             keyHash: i_keyHash,
@@ -87,23 +88,23 @@ contract Raffel is VRFConsumerBaseV2Plus {
     }
 
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
-    
-            uint256 indexOfWinner = randomWords[0] % s_players.length;
-            address payable winner = s_players[indexOfWinner];
-            s_recentWinner = winner;
-            s_raffelState = RaffelState.OPEN;
+        uint256 indexOfWinner = randomWords[0] % s_players.length;
+        address payable winner = s_players[indexOfWinner];
+        s_recentWinner = winner;
+        s_raffelState = RaffelState.OPEN;
 
-            //Reset The Palyers Array
-            s_players = new address payable[](0);
-            s_lastTimestamp = block.timestamp;
+        //Reset The Palyers Array
+        s_players = new address payable[](0);
+        s_lastTimestamp = block.timestamp;
 
-            //Transfer the balance to the winner
-            (bool success,) = winner.call{value:address(this).balance}("");
-            if(!success){
-                revert Reffel__FieldTransfer();
-            }
+        //Transfer the balance to the winner
+        (bool success,) = winner.call{value: address(this).balance}("");
+        if (!success) {
+            revert Reffel__FieldTransfer();
+        }
+
+        emit WinnerPicked(s_recentWinner);
     }
-
 
     /**
      * Geter Function
