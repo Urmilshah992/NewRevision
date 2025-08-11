@@ -75,8 +75,6 @@ contract Raffel is VRFConsumerBaseV2Plus {
         }
         
         s_raffelState = RaffelState.CALCULATING;
-    
-
         VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient.RandomWordsRequest({
             keyHash: i_keyHash,
             subId: i_subscriptionId,
@@ -93,6 +91,13 @@ contract Raffel is VRFConsumerBaseV2Plus {
             uint256 indexOfWinner = randomWords[0] % s_players.length;
             address payable winner = s_players[indexOfWinner];
             s_recentWinner = winner;
+            s_raffelState = RaffelState.OPEN;
+
+            //Reset The Palyers Array
+            s_players = new address payable[](0);
+            s_lastTimestamp = block.timestamp;
+
+            //Transfer the balance to the winner
             (bool success,) = winner.call{value:address(this).balance}("");
             if(!success){
                 revert Reffel__FieldTransfer();
