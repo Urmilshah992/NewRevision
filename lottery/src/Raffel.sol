@@ -13,6 +13,13 @@ contract Raffel is VRFConsumerBaseV2Plus {
     /* Custom Error    */
     error Raffel__NotEnoughEth();
     error Reffel__FieldTransfer();
+    error Raffel__NotOpen();
+
+    /* Type Declaration*/
+    enum RaffelState{
+        OPEN,
+        CALCULATING
+    }
 
     /* State Variables */
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
@@ -25,6 +32,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
     address payable[] private s_players;
     uint256 private s_lastTimestamp;
     address private s_recentWinner;
+    RaffelState private s_raffelState;
 
     /* Events  */
     event RaffelEntered(address indexed player);
@@ -43,12 +51,17 @@ contract Raffel is VRFConsumerBaseV2Plus {
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
         s_lastTimestamp = block.timestamp;
+        s_raffelState = RaffelState.OPEN;
     }
 
     function enterRaffel() public payable {
         if (msg.value < i_entranceFee) {
             //Revert the transaction if the user has not sent enough ETH`
             revert Raffel__NotEnoughEth();
+        }
+
+        if(s_raffelState != RaffelState.OPEN){
+            revert Raffel__NotOpen();
         }
         //Add the player to the players array
         s_players.push(payable(msg.sender));
@@ -61,6 +74,8 @@ contract Raffel is VRFConsumerBaseV2Plus {
             revert();
         }
         
+        s_raffelState = RaffelState.CALCULATING;
+    
 
         VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient.RandomWordsRequest({
             keyHash: i_keyHash,
