@@ -55,6 +55,9 @@ contract Raffel is VRFConsumerBaseV2Plus {
         s_raffelState = RaffelState.OPEN;
     }
 
+    // CEI : Check, Effect, Interaction
+    
+
     function enterRaffel() public payable {
         if (msg.value < i_entranceFee) {
             //Revert the transaction if the user has not sent enough ETH`
@@ -103,7 +106,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
             revert Reffel__FieldTransfer();
         }
 
-        emit WinnerPicked(s_recentWinner);
+        emit WinnerPicked(s_recentWinner); 
     }
 
     /**
