@@ -90,7 +90,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
 
     }
 
-    function pickWiner() public {
+    function performUpkeep(bytes calldata /* performData */) external {
         (bool upkeepNeeded,) = checkUpkeep("");
         if(!upkeepNeeded){
             revert Raffel__UpkeepNotNeeded(address(this).balance, s_players.length, uint256(s_raffelState));
