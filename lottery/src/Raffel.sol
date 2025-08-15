@@ -57,7 +57,6 @@ contract Raffel is VRFConsumerBaseV2Plus {
     }
 
     // CEI : Check, Effect, Interaction
-    
 
     function enterRaffel() public payable {
         if (msg.value < i_entranceFee) {
@@ -73,26 +72,23 @@ contract Raffel is VRFConsumerBaseV2Plus {
         //Emit an event
         emit RaffelEntered(msg.sender);
     }
-    
-    function checkUpkeep(
-        bytes memory /* checkData */
-    )
+
+    function checkUpkeep(bytes memory /* checkData */ )
         public
         view
-        returns (bool upkeepNeeded, bytes memory /* performData */)
+        returns (bool upkeepNeeded, bytes memory /* performData */ )
     {
-        bool timeHasPassed = (block.timestamp - s_lastTimestamp)>= i_interval;
+        bool timeHasPassed = (block.timestamp - s_lastTimestamp) >= i_interval;
         bool isOpen = (s_raffelState == RaffelState.OPEN);
-        bool hasBalance = address(this).balance >0;
-        bool hasPlayers = s_players.length >0;
-        upkeepNeeded = ( timeHasPassed && isOpen && hasBalance && hasPlayers);
+        bool hasBalance = address(this).balance > 0;
+        bool hasPlayers = s_players.length > 0;
+        upkeepNeeded = (timeHasPassed && isOpen && hasBalance && hasPlayers);
         return (upkeepNeeded, "0x");
-
     }
 
-    function performUpkeep(bytes calldata /* performData */) external {
+    function performUpkeep(bytes calldata /* performData */ ) external {
         (bool upkeepNeeded,) = checkUpkeep("");
-        if(!upkeepNeeded){
+        if (!upkeepNeeded) {
             revert Raffel__UpkeepNotNeeded(address(this).balance, s_players.length, uint256(s_raffelState));
         }
 
@@ -105,12 +101,10 @@ contract Raffel is VRFConsumerBaseV2Plus {
             numWords: NUM_WORDS,
             extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: false}))
         });
-        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        s_vrfCoordinator.requestRandomWords(request);
     }
 
-
-
-    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
+    function fulfillRandomWords(uint256, /*requestId*/ uint256[] calldata randomWords) internal override {
         uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable winner = s_players[indexOfWinner];
         s_recentWinner = winner;
@@ -126,7 +120,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
             revert Reffel__FieldTransfer();
         }
 
-        emit WinnerPicked(s_recentWinner); 
+        emit WinnerPicked(s_recentWinner);
     }
 
     /**
