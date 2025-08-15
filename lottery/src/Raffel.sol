@@ -90,6 +90,23 @@ contract Raffel is VRFConsumerBaseV2Plus {
         uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
     }
 
+    function checkUpkeep(
+        bytes calldata /* checkData */
+    )
+        public
+        view
+        returns (bool upkeepNeeded, bytes memory /* performData */)
+    {
+        bool timeHasPassed = (block.timestamp - s_lastTimestamp)>= i_interval;
+        bool isOpen = (s_raffelState == RaffelState.OPEN);
+        bool hasBalance = address(this).balance >0;
+        bool hasPlayers = s_players.length >0;
+        upkeepNeeded = ( timeHasPassed && isOpen && hasBalance && hasPlayers);
+        return (upkeepNeeded, "0x");
+
+    }
+
+
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
         uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable winner = s_players[indexOfWinner];
