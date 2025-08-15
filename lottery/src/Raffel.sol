@@ -14,6 +14,7 @@ contract Raffel is VRFConsumerBaseV2Plus {
     error Raffel__NotEnoughEth();
     error Reffel__FieldTransfer();
     error Raffel__NotOpen();
+    error Raffel__UpkeepNotNeeded(uint256 balance, uint256 length, uint256 raffelState);
 
     /* Type Declaration*/
     enum RaffelState {
@@ -72,10 +73,27 @@ contract Raffel is VRFConsumerBaseV2Plus {
         //Emit an event
         emit RaffelEntered(msg.sender);
     }
+    
+    function checkUpkeep(
+        bytes memory /* checkData */
+    )
+        public
+        view
+        returns (bool upkeepNeeded, bytes memory /* performData */)
+    {
+        bool timeHasPassed = (block.timestamp - s_lastTimestamp)>= i_interval;
+        bool isOpen = (s_raffelState == RaffelState.OPEN);
+        bool hasBalance = address(this).balance >0;
+        bool hasPlayers = s_players.length >0;
+        upkeepNeeded = ( timeHasPassed && isOpen && hasBalance && hasPlayers);
+        return (upkeepNeeded, "0x");
+
+    }
 
     function pickWiner() public {
-        if (block.timestamp - s_lastTimestamp < i_interval) {
-            revert();
+        (bool upkeepNeeded,) = checkUpkeep("");
+        if(!upkeepNeeded){
+            revert Raffel__UpkeepNotNeeded(address(this).balance, s_players.length, uint256(s_raffelState));
         }
 
         s_raffelState = RaffelState.CALCULATING;
@@ -90,21 +108,6 @@ contract Raffel is VRFConsumerBaseV2Plus {
         uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
     }
 
-    function checkUpkeep(
-        bytes calldata /* checkData */
-    )
-        public
-        view
-        returns (bool upkeepNeeded, bytes memory /* performData */)
-    {
-        bool timeHasPassed = (block.timestamp - s_lastTimestamp)>= i_interval;
-        bool isOpen = (s_raffelState == RaffelState.OPEN);
-        bool hasBalance = address(this).balance >0;
-        bool hasPlayers = s_players.length >0;
-        upkeepNeeded = ( timeHasPassed && isOpen && hasBalance && hasPlayers);
-        return (upkeepNeeded, "0x");
-
-    }
 
 
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
