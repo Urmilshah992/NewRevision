@@ -1,4 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-contract DeployRaffel {}
+import {Raffel} from "src/Raffel.sol";
+import {Script} from "forge-std/Script.sol";
+import {HelperConfig} from "script/HelperConfig.s.sol";
+
+contract DeployRaffel is Script {
+
+    function run() external returns(Raffel,HelperConfig){ 
+    }
+}
