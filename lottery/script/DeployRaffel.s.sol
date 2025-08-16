@@ -7,6 +7,8 @@ import {HelperConfig} from "script/HelperConfig.s.sol";
 
 contract DeployRaffel is Script {
 
-    function run() external returns(Raffel,HelperConfig){ 
+    function run() public{ 
     }
+
+    function deployContract() public returns(Raffel, HelperConfig){}
 }
