@@ -23,7 +23,7 @@ contract HelperConfig {
     }
 
 
-    function getSpoliaNetworkConfig() public returns(NetworkConfig memory){
+    function getSpoliaNetworkConfig() public pure returns(NetworkConfig memory){
         return NetworkConfig({
             entranceFee : 0.01 ether, //1e16
             interval : 30, //30 seconds
