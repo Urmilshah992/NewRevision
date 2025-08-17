@@ -8,5 +8,7 @@ import {HelperConfig} from "script/HelperConfig.s.sol";
 contract DeployRaffel is Script {
     function run() public {}
 
-    function deployContract() public returns (Raffel, HelperConfig) {}
+    function deployContract() public returns (Raffel, HelperConfig) {
+        HelperConfig helperconfig = new HelperConfig();
+    }
 }

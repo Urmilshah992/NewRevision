@@ -49,6 +49,9 @@ contract HelperConfig is ConstVlue, Script {
         }
     }
 
+    function getConfig() public returns (NetworkConfig memory){
+        return getConfigByChainId(block.chainid);
+    }
     function getSpoliaNetworkConfig() public pure returns (NetworkConfig memory) {
         return NetworkConfig({
             entranceFee: 0.01 ether, //1e16
@@ -78,6 +81,6 @@ contract HelperConfig is ConstVlue, Script {
             callbackGasLimit: 500000 // 500,000 gas limit for callback
         });
        
-
+        return localNetworkConfig; 
     }
 }
