@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import {DeployRaffel} from "script/DeployRaffel.s.sol";
+import {Script} from "forge-std/Script.sol";
 abstract contract ConstVlue{
     uint256 public constant ETH_SPOLIA_CHAIN_ID = 11155111;
+    uint256 public constant LOCAL_CHAIN_ID = 31337;
 }
 
-contract HelperConfig {
+contract HelperConfig is ConstVlue,Script {
+
+    error HelperConfig__InvalidChainId(uint256 chainId);
 
     struct NetworkConfig{
         uint256 entranceFee;
@@ -22,9 +25,21 @@ contract HelperConfig {
     mapping(uint256 chainId => NetworkConfig) public networkConfigs;
 
     constructor(){
-        networkConfigs[11155111] = getSpoliaNetworkConfig(); // Sepolia Network
+        networkConfigs[ETH_SPOLIA_CHAIN_ID] = getSpoliaNetworkConfig(); // Sepolia Network
     }
 
+    function getConfigByChainId(uint256 chainid) public returns(NetworkConfig memory){
+        if(networkConfigs[chainid].vrfCoordinator == address(0)){
+            return networkConfigs[chainid];
+        }
+        else if(chainid == LOCAL_CHAIN_ID){
+            return getSpoliaNetworkConfig();
+        }
+        else{
+            revert  HelperConfig__InvalidChainId(chainid);
+        }
+
+    }
 
     function getSpoliaNetworkConfig() public pure returns(NetworkConfig memory){
         return NetworkConfig({
