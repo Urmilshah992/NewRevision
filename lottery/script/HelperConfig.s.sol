@@ -66,8 +66,18 @@ contract HelperConfig is ConstVlue, Script {
         }
 
         vm.startBroadcast();
-        VRFCoordinatorV2_5Mock vrfCoordinator = new VRFCoordinatorV2_5Mock;
+        VRFCoordinatorV2_5Mock vrfcoordinatorMock = new VRFCoordinatorV2_5Mock(MOCK_BASE_FEE, MOCK_GAS_PRICE, MOCK_WEI_PER_UNIT_LINK);
         vm.stopBroadcast();
+
+        localNetworkConfig = NetworkConfig({
+            entranceFee: 0.01 ether, //1e16
+            interval: 30, //30 seconds
+            vrfCoordinator: address(vrfcoordinatorMock), //Local VRF Coordinator
+            gasLine: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae, // Local gas line
+            subscriptionId: 0, // Subscription ID for local network
+            callbackGasLimit: 500000 // 500,000 gas limit for callback
+        });
+       
 
     }
 }
