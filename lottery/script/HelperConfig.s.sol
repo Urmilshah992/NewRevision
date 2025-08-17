@@ -2,6 +2,9 @@
 pragma solidity ^0.8.29;
 
 import {DeployRaffel} from "script/DeployRaffel.s.sol";
+abstract contract ConstVlue{
+    uint256 public constant ETH_SPOLIA_CHAIN_ID = 11155111;
+}
 
 contract HelperConfig {
 
