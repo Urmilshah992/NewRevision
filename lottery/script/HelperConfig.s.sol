@@ -28,7 +28,7 @@ contract HelperConfig is ConstVlue,Script {
         networkConfigs[ETH_SPOLIA_CHAIN_ID] = getSpoliaNetworkConfig(); // Sepolia Network
     }
 
-    function getConfigByChainId(uint256 chainid) public returns(NetworkConfig memory){
+    function getConfigByChainId(uint256 chainid) public view returns(NetworkConfig memory){
         if(networkConfigs[chainid].vrfCoordinator == address(0)){
             return networkConfigs[chainid];
         }
@@ -50,6 +50,14 @@ contract HelperConfig is ConstVlue,Script {
             subscriptionId: 0, // Subscription ID for Sepolia
             callbackGasLimit: 500000 // 500,000 gas limit for callback 
             });
+    }
+
+
+    function getAnvilNetwrokConfig() public returns(NetworkConfig memory){
+        if(localNetworkConfig.vrfCoordinator != address(0)){
+            return localNetworkConfig;
+            
+        }
     }
  
 }
