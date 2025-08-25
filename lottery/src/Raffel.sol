@@ -133,4 +133,8 @@ contract Raffel is VRFConsumerBaseV2Plus {
     function getRaffelState() external view returns (RaffelState) {
         return s_raffelState;
     }
+
+    function getPlayer(uint256 index) external view returns (address) {
+        return s_players[index];
+    }
 }

@@ -39,7 +39,7 @@ contract HelperConfig is ConstVlue, Script {
     }
 
     function getConfigByChainId(uint256 chainid) public returns (NetworkConfig memory) {
-        if (networkConfigs[chainid].vrfCoordinator == address(0)) {
+        if (networkConfigs[chainid].vrfCoordinator != address(0)) {
             return networkConfigs[chainid];
         } else if (chainid == LOCAL_CHAIN_ID) {
             return getAnvilNetwrokConfig();

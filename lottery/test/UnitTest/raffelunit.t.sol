@@ -34,9 +34,13 @@ contract RaffelUnitTest is Test {
         callbackGasLimit = config.callbackGasLimit;
     }
 
-
-
-    function testRaffelInitializesInOpenState() public view{
+    function testRaffelInitializesInOpenState() public view {
         assert(raffel.getRaffelState() == Raffel.RaffelState.OPEN);
+    }
+
+    function testRaffelWhenyoudonthaveenoughEth() public {
+        vm.prank(PLAYER);
+        vm.expectRevert(Raffel.Raffel__NotEnoughEth.selector);
+        raffel.enterRaffel();
     }
 }
