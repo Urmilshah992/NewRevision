@@ -129,4 +129,8 @@ contract Raffel is VRFConsumerBaseV2Plus {
     function getEntrancefee() external view returns (uint256) {
         return i_entranceFee;
     }
+
+    function getRaffelState() external view returns (RaffelState) {
+        return s_raffelState;
+    }
 }

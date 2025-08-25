@@ -12,8 +12,7 @@ contract DeployRaffel is Script {
         HelperConfig helperconfig = new HelperConfig();
         // local -> deploy mock-> get local config
         // spolia -> get spolia config
-        HelperConfig.NetworkConfig memory config = helperconfig.getConfig(); 
-
+        HelperConfig.NetworkConfig memory config = helperconfig.getConfig();
 
         vm.startBroadcast();
         Raffel raffel = new Raffel(
@@ -25,6 +24,6 @@ contract DeployRaffel is Script {
             config.callbackGasLimit
         );
         vm.stopBroadcast();
-        return(raffel, helperconfig);
+        return (raffel, helperconfig);
     }
 }
