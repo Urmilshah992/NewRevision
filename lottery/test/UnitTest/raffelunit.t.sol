@@ -58,4 +58,15 @@ contract RaffelUnitTest is Test {
 
     }
 
+    function testEmitsEventOnEntrance() public{
+        //Arrange
+        vm.prank(PLAYER);
+        //Act
+        vm.expectEmit(true,false,false,false,address(raffel));
+        emit Raffel.RaffelEntered(PLAYER);
+        raffel.enterRaffel{value:entranceFee}();
+        //Assert
+
+    }
+
 }
