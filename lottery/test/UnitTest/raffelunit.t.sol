@@ -35,38 +35,34 @@ contract RaffelUnitTest is Test {
         vm.deal(PLAYER, STARTING_BALANCE);
     }
 
-
-
-    function testRaffelInitializesInOpenState() public view{
+    function testRaffelInitializesInOpenState() public view {
         assert(raffel.getRaffelState() == Raffel.RaffelState.OPEN);
     }
 
-    function testRaffelWhenyoudonthaveenoughEth()public{
+    function testRaffelWhenyoudonthaveenoughEth() public {
         vm.prank(PLAYER);
         vm.expectRevert(Raffel.Raffel__NotEnoughEth.selector);
         raffel.enterRaffel();
     }
-    
-    function testplayersAddedToArray() public{
+
+    function testplayersAddedToArray() public {
         //Arrange
         vm.prank(PLAYER);
         //Act
-        raffel.enterRaffel{value:entranceFee}();
+        raffel.enterRaffel{value: entranceFee}();
         address player = raffel.getPlayer(0);
         //Assert
         assert(player == PLAYER);
-
     }
 
-    function testEmitsEventOnEntrance() public{
+    function testEmitsEventOnEntrance() public {
         //Arrange
         vm.prank(PLAYER);
         //Act
-        vm.expectEmit(true,false,false,false,address(raffel));
+        vm.expectEmit(true, false, false, false, address(raffel));
         emit Raffel.RaffelEntered(PLAYER);
-        raffel.enterRaffel{value:entranceFee}();
+
         //Assert
-
+        raffel.enterRaffel{value: entranceFee}();
     }
-
 }
