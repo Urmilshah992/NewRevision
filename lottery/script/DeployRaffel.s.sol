@@ -15,8 +15,10 @@ contract DeployRaffel is Script {
         // spolia -> get spolia config
         HelperConfig.NetworkConfig memory config = helperconfig.getConfig();
 
-        if(config.subscriptionId == 0 ){
-            //create subscription
+        if (config.subscriptionId == 0) {
+            CreateSubscription createsubscription = new CreateSubscription();
+            (config.subscriptionId, config.vrfCoordinator) =
+                createsubscription.createSubscriptionF(config.vrfCoordinator);
         }
         vm.startBroadcast();
         Raffel raffel = new Raffel(

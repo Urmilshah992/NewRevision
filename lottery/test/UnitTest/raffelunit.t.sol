@@ -66,7 +66,7 @@ contract RaffelUnitTest is Test {
         raffel.enterRaffel{value: entranceFee}();
     }
 
-    function testCantAlloedPlayerWhenRaffelIsCalculating() public{
+    function testCantAlloedPlayerWhenRaffelIsCalculating() public {
         //Arrange
         vm.prank(PLAYER);
         raffel.enterRaffel{value: entranceFee}();
@@ -78,7 +78,5 @@ contract RaffelUnitTest is Test {
         vm.prank(PLAYER);
         vm.expectRevert(Raffel.Raffel__NotOpen.selector);
         raffel.enterRaffel{value: entranceFee}();
-
     }
-
 }
