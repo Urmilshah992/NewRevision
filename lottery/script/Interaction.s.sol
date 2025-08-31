@@ -10,21 +10,24 @@ import {HelperConfig} from "script/HelperConfig.s.sol";
 
 contract CreateSubscription is Script{
 
-    function createSubscriptionUsingPublic() public{
+    function createSubscriptionUsingPublicF() public returns(uint256 ,address){
         HelperConfig helperconfig = new HelperConfig();
         address vrfCoordinator = helperconfig.getConfig().vrfCoordinator;
-        createSubscription(vrfCoordinator);
+       (uint256 subId ,) = createSubscriptionF(vrfCoordinator);
+       return(subId, vrfCoordinator);
     }
 
-    function createSubscription(address vrfCoordinator) public {
+    function createSubscriptionF(address vrfCoordinator) public returns(uint256 ,address) {
         console.log("Creating subscription on vrfCoordinator:",vrfCoordinator);
         vm.startBroadcast();
-        VRFCoordinatorV2_5Mock(vrfCoordinator).createSubscription();
+        uint256 subId = VRFCoordinatorV2_5Mock(vrfCoordinator).createSubscription();
         vm.stopBroadcast();
-
+        console.log("your subID is:", subId);
+        console.log("Please update the SubID in the HelperConfig.s.sol and reDeply");
+        return (subId, vrfCoordinator);
     }
     function run() public{
-        createSubscriptionUsingPublic(); 
+        createSubscriptionUsingPublicF(); 
 
     }
 
